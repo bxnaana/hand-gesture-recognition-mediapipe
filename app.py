@@ -4,6 +4,7 @@ import csv
 import copy
 import argparse
 import itertools
+import pyautogui
 from collections import Counter
 from collections import deque
 
@@ -61,7 +62,7 @@ def main():
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands(
         static_image_mode=use_static_image_mode,
-        max_num_hands=1,
+        max_num_hands=2,
         min_detection_confidence=min_detection_confidence,
         min_tracking_confidence=min_tracking_confidence,
     )
@@ -143,6 +144,7 @@ def main():
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
                 if hand_sign_id == 2:  # Point gesture
                     point_history.append(landmark_list[8])
+                    
                 else:
                     point_history.append([0, 0])
 
@@ -173,6 +175,11 @@ def main():
 
         debug_image = draw_point_history(debug_image, point_history)
         debug_image = draw_info(debug_image, fps, mode, number)
+        
+        #Scroll logic
+        if mode == 1: #Open hand
+            pyautogui.scroll(10)
+            
 
         # Screen reflection #############################################################
         cv.imshow('Hand Gesture Recognition', debug_image)
